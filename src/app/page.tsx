@@ -2,6 +2,7 @@ import { itinerary } from '@/data/itinerary'
 import DaySection from '@/components/DaySection'
 import DayNav from '@/components/DayNav'
 import Checklist from '@/components/Checklist'
+import CurrencyConverter from '@/components/CurrencyConverter'
 import Petals from '@/components/Petals'
 
 export default function Home() {
@@ -17,17 +18,16 @@ export default function Home() {
       {/* Falling cherry blossom petals */}
       <Petals />
 
-      {/* Hero */}
-      <header className="relative bg-gradient-to-br from-japan-red via-[#8B001F] to-japan-navy text-white overflow-hidden">
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <header className="relative bg-gradient-to-br from-japan-red via-japan-darkred to-japan-navy text-white overflow-hidden">
         {/* Spring cherry blossom overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-300/20 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-300/15 via-transparent to-transparent pointer-events-none" />
         {/* Background decorations */}
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
           <div className="absolute -top-4 right-4 text-[160px] font-bold leading-none opacity-[0.07]">
             旅
           </div>
           <div className="absolute bottom-0 left-0 w-full h-px bg-white/10" />
-          {/* Sakura blossom silhouettes */}
           <div className="absolute top-12 left-8 w-32 h-32 rounded-full bg-rose-300/10" />
           <div className="absolute bottom-8 right-24 w-20 h-20 rounded-full bg-pink-200/10" />
           <div className="absolute top-6 right-48 w-12 h-12 rounded-full bg-rose-200/10" />
@@ -89,15 +89,18 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Sticky day navigation */}
+      {/* ── Sticky day navigation ────────────────────────── */}
       <DayNav days={navDays} />
 
-      {/* Main content */}
+      {/* ── Main content ─────────────────────────────────── */}
       <main className="max-w-2xl mx-auto px-4 py-8">
-        {/* Checklist */}
+        {/* Pre-departure checklist */}
         <Checklist />
 
-        {/* Day sections */}
+        {/* Currency converter */}
+        <CurrencyConverter />
+
+        {/* Day-by-day itinerary */}
         <div className="space-y-12">
           {itinerary.map((day) => (
             <DaySection key={day.day} day={day} />
@@ -106,10 +109,10 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="mt-16 text-center pb-10">
-          <div className="w-16 h-px bg-gray-200 mx-auto mb-6" />
+          <div className="w-16 h-px bg-journal-300 mx-auto mb-6" />
           <div className="text-3xl mb-3">🌸</div>
-          <p className="text-gray-500 text-sm font-medium">良い旅を！</p>
-          <p className="text-gray-400 text-xs mt-1">祝你有個美好的日本旅程</p>
+          <p className="text-journal-600 text-sm font-medium">良い旅を！</p>
+          <p className="text-journal-500 text-xs mt-1">祝你有個美好的日本旅程</p>
         </footer>
       </main>
     </div>

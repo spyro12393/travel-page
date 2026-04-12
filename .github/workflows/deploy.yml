@@ -32,6 +32,10 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY in repo Settings → Secrets → Actions
+          # The site builds and deploys without it; maps show a placeholder message.
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

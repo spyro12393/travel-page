@@ -1,15 +1,28 @@
 import { DayItinerary } from '@/data/itinerary'
 import ActivityCard from './ActivityCard'
+import WeatherWidget from './WeatherWidget'
+import DayMap from './DayMap'
+import type { MapPoint } from './DayMap'
 
 interface DaySectionProps {
   day: DayItinerary
 }
 
 export default function DaySection({ day }: DaySectionProps) {
+  // Only activities with coordinates become map waypoints
+  const mapPoints: MapPoint[] = day.activities
+    .filter((a) => a.lat !== undefined && a.lng !== undefined)
+    .map((a) => ({
+      lat: a.lat!,
+      lng: a.lng!,
+      title: a.title,
+      category: a.category,
+    }))
+
   return (
     <section id={`day-${day.day}`} className="scroll-mt-16">
       {/* Day header card */}
-      <div className={`bg-gradient-to-r ${day.gradient} rounded-2xl p-5 mb-6 shadow-md`}>
+      <div className={`bg-gradient-to-r ${day.gradient} rounded-2xl p-5 mb-5 shadow-md`}>
         <div className="flex items-start justify-between gap-2">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
@@ -27,6 +40,17 @@ export default function DaySection({ day }: DaySectionProps) {
           <span className="text-4xl flex-shrink-0 drop-shadow-sm">{day.themeIcon}</span>
         </div>
       </div>
+
+      {/* Weather forecast for this day */}
+      <WeatherWidget
+        date={day.date}
+        weatherLat={day.weatherLat}
+        weatherLng={day.weatherLng}
+        weatherLocation={day.weatherLocation}
+      />
+
+      {/* Interactive map with waypoints */}
+      <DayMap points={mapPoints} dayNum={day.day} />
 
       {/* Activities timeline */}
       <div className="pl-1">

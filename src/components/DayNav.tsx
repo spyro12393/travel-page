@@ -38,7 +38,7 @@ export default function DayNav({ days }: DayNavProps) {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+    <nav className="sticky top-0 z-50 bg-journal-50/95 backdrop-blur-sm border-b border-journal-200 shadow-sm">
       <div className="max-w-2xl mx-auto px-4">
         <div className="flex overflow-x-auto gap-1 py-2.5 scrollbar-hide">
           {days.map((day) => (
@@ -48,13 +48,17 @@ export default function DayNav({ days }: DayNavProps) {
               className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 activeDay === day.day
                   ? 'bg-japan-red text-white shadow-sm'
-                  : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                  : 'text-journal-600 hover:bg-journal-200 hover:text-journal-800'
               }`}
             >
               <span>{day.themeIcon}</span>
               <div className="flex flex-col items-start leading-tight">
                 <span className="font-bold">Day {day.day}</span>
-                <span className={`text-[10px] ${activeDay === day.day ? 'text-white/75' : 'text-gray-400'}`}>
+                <span
+                  className={`text-[10px] ${
+                    activeDay === day.day ? 'text-white/75' : 'text-journal-500'
+                  }`}
+                >
                   {day.date}
                 </span>
               </div>

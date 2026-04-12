@@ -7,6 +7,12 @@ export type ActivityCategory =
   | 'hotel'
   | 'task'
 
+export interface TransitSchedule {
+  line: string
+  departures: string[]   // ordered list of times (local JST)
+  bookedIndex: number    // 0-based index of the booked slot
+}
+
 export interface Activity {
   time?: string
   icon: string
@@ -14,16 +20,27 @@ export interface Activity {
   subtitle?: string
   mapQuery?: string
   category: ActivityCategory
+  // Map
+  lat?: number
+  lng?: number
+  // Extra info
+  businessHours?: string   // e.g. "09:00–17:00（火曜休）"
+  transitMinutes?: number  // minutes from previous stop to this one
+  schedule?: TransitSchedule
 }
 
 export interface DayItinerary {
   day: number
-  date: string
-  weekday: string
+  date: string       // "04.16"
+  weekday: string    // "四"
   theme: string
   themeIcon: string
-  gradient: string
+  gradient: string   // Tailwind gradient classes for the day header
   activities: Activity[]
+  // Open-Meteo weather location for this day
+  weatherLat: number
+  weatherLng: number
+  weatherLocation: string
 }
 
 export const checklist = [
@@ -33,29 +50,44 @@ export const checklist = [
 ]
 
 export const itinerary: DayItinerary[] = [
+  // ─────────────────────────────────────────────────────
+  // DAY 1 · 名古屋初見：國寶城與首波採買
+  // ─────────────────────────────────────────────────────
   {
     day: 1,
     date: '04.16',
     weekday: '四',
     theme: '名古屋初見：國寶城與首波採買',
     themeIcon: '🏯',
-    gradient: 'from-red-600 to-rose-400',
+    gradient: 'from-red-700 to-rose-500',
+    weatherLat: 35.1815,
+    weatherLng: 136.9066,
+    weatherLocation: '名古屋',
     activities: [
       {
-        time: '07:30 - 11:20',
+        time: '07:30 – 11:20',
         icon: '✈️',
         title: '航班 CI0154',
         subtitle: 'TPE T2 ➔ NGO T1',
         category: 'flight',
         mapQuery: '桃園國際機場 第二航廈',
+        lat: 25.0777,
+        lng: 121.2328,
       },
       {
-        time: '11:20 - 13:00',
+        time: '11:20 – 13:00',
         icon: '🚆',
         title: '名鐵特急',
         subtitle: '機場前往名古屋市區',
         category: 'transport',
         mapQuery: '中部国際空港駅 名鉄',
+        lat: 34.8573,
+        lng: 136.8059,
+        schedule: {
+          line: '名鐵空港線 μ-SKY 特急',
+          departures: ['11:01', '11:30', '12:01', '12:30', '13:01'],
+          bookedIndex: 1,
+        },
       },
       {
         time: '13:00',
@@ -64,14 +96,21 @@ export const itinerary: DayItinerary[] = [
         subtitle: 'Check-in',
         category: 'hotel',
         mapQuery: '三井ガーデンホテル名古屋プレミア',
+        lat: 35.1710,
+        lng: 136.8834,
+        businessHours: 'チェックイン 15:00 ／ チェックアウト 12:00',
       },
       {
-        time: '14:15 - 18:00',
+        time: '14:15 – 18:00',
         icon: '🏯',
         title: '國寶犬山城',
         subtitle: '日本現存最古老的木造天守閣',
         category: 'attraction',
         mapQuery: '犬山城 愛知県犬山市',
+        lat: 35.3858,
+        lng: 136.9441,
+        businessHours: '09:00–17:00（最終入場 16:30）火曜休',
+        transitMinutes: 40,
       },
       {
         time: '18:00',
@@ -80,6 +119,10 @@ export const itinerary: DayItinerary[] = [
         subtitle: '名古屋名物味噌煮込烏龍麵',
         category: 'food',
         mapQuery: '山本屋総本家 名古屋',
+        lat: 35.1701,
+        lng: 136.8985,
+        businessHours: '11:00–21:00（月曜休）',
+        transitMinutes: 55,
       },
       {
         time: '20:00',
@@ -88,9 +131,17 @@ export const itinerary: DayItinerary[] = [
         subtitle: 'Uniqlo 名古屋店 & MEGA 唐吉訶德',
         category: 'shopping',
         mapQuery: 'MEGAドン・キホーテ 名古屋',
+        lat: 35.1612,
+        lng: 136.9026,
+        businessHours: '08:00 – 翌05:00',
+        transitMinutes: 10,
       },
     ],
   },
+
+  // ─────────────────────────────────────────────────────
+  // DAY 2 · 飛驒高山：古街與燒肉之約
+  // ─────────────────────────────────────────────────────
   {
     day: 2,
     date: '04.17',
@@ -98,14 +149,24 @@ export const itinerary: DayItinerary[] = [
     theme: '飛驒高山：古街與燒肉之約',
     themeIcon: '🐮',
     gradient: 'from-orange-500 to-amber-400',
+    weatherLat: 36.1461,
+    weatherLng: 137.2527,
+    weatherLocation: '高山',
     activities: [
       {
-        time: '08:43 - 11:00',
+        time: '08:43 – 11:00',
         icon: '🚄',
         title: 'JR 特急 Wide View 飛驒號',
         subtitle: '名古屋 ➔ 高山',
         category: 'transport',
         mapQuery: '名古屋駅 JR在来線',
+        lat: 35.1706,
+        lng: 136.8821,
+        schedule: {
+          line: 'JR 特急 ワイドビュー飛驒',
+          departures: ['07:43', '08:43', '09:43', '11:43', '13:43'],
+          bookedIndex: 1,
+        },
       },
       {
         time: '11:00',
@@ -114,6 +175,9 @@ export const itinerary: DayItinerary[] = [
         subtitle: '寄放行李',
         category: 'hotel',
         mapQuery: 'eph TAKAYAMA 高山市',
+        lat: 36.1469,
+        lng: 137.2499,
+        businessHours: 'チェックイン 15:00 ／ チェックアウト 11:00',
       },
       {
         time: '12:00',
@@ -122,14 +186,22 @@ export const itinerary: DayItinerary[] = [
         subtitle: '高山名物飛驒牛料理',
         category: 'food',
         mapQuery: '坂口屋 高山市',
+        lat: 36.1448,
+        lng: 137.2513,
+        businessHours: '11:00–14:00、17:00–21:00（水曜休）',
+        transitMinutes: 8,
       },
       {
-        time: '13:40 - 17:30',
+        time: '13:40 – 17:30',
         icon: '🏮',
         title: '高山老街散策',
-        subtitle: '飛驒高山古い町並み',
+        subtitle: '飛驒高山古い町並み（三町）',
         category: 'attraction',
         mapQuery: '飛騨高山 古い町並み',
+        lat: 36.1430,
+        lng: 137.2527,
+        businessHours: '終日開放（各店 09:00–17:00 頃）',
+        transitMinutes: 5,
       },
       {
         time: '17:30',
@@ -138,6 +210,10 @@ export const itinerary: DayItinerary[] = [
         subtitle: '濃飛巴士中心',
         category: 'task',
         mapQuery: '濃飛バスセンター 高山',
+        lat: 36.1444,
+        lng: 137.2491,
+        businessHours: '07:00–19:00',
+        transitMinutes: 5,
       },
       {
         time: '18:00',
@@ -146,9 +222,17 @@ export const itinerary: DayItinerary[] = [
         subtitle: '飛驒牛燒肉',
         category: 'food',
         mapQuery: '丸明 高山市',
+        lat: 36.1478,
+        lng: 137.2508,
+        businessHours: '11:30–14:00、17:00–21:30（不定休）',
+        transitMinutes: 5,
       },
     ],
   },
+
+  // ─────────────────────────────────────────────────────
+  // DAY 3 · 上高地與新穗高：阿爾卑斯絕景
+  // ─────────────────────────────────────────────────────
   {
     day: 3,
     date: '04.18',
@@ -156,30 +240,47 @@ export const itinerary: DayItinerary[] = [
     theme: '上高地與新穗高：阿爾卑斯絕景',
     themeIcon: '🏔️',
     gradient: 'from-sky-600 to-blue-400',
+    weatherLat: 36.2478,
+    weatherLng: 137.6471,
+    weatherLocation: '上高地',
     activities: [
       {
-        time: '07:40 - 09:10',
+        time: '07:40 – 09:10',
         icon: '🚌',
         title: '濃飛巴士',
         subtitle: '高山 ➔ 上高地',
         category: 'transport',
         mapQuery: '高山濃飛バスセンター',
+        lat: 36.1444,
+        lng: 137.2491,
+        schedule: {
+          line: '濃飛バス 新穗高線（上高地行）',
+          departures: ['07:00', '07:40', '08:30', '09:30', '10:30'],
+          bookedIndex: 1,
+        },
       },
       {
-        time: '09:10 - 11:10',
+        time: '09:10 – 11:10',
         icon: '🥾',
         title: '上高地健行',
-        subtitle: '大正池 ➔ 河童橋，北阿爾卑斯山絕景',
+        subtitle: '大正池 ➔ 河童橋（約 5km）',
         category: 'attraction',
         mapQuery: '上高地 大正池 長野県',
+        lat: 36.2282,
+        lng: 137.6345,
+        businessHours: '4月中旬〜11月中旬（開山期間中）',
       },
       {
-        time: '13:30 - 15:30',
+        time: '13:30 – 15:30',
         icon: '🚠',
         title: '新穗高纜車',
         subtitle: '必吃：可頌、飛驒牛咖哩麵包',
         category: 'attraction',
         mapQuery: '新穂高ロープウェイ 岐阜県',
+        lat: 36.3012,
+        lng: 137.6052,
+        businessHours: '08:30–16:45（下り最終 17:00）年中無休',
+        transitMinutes: 50,
       },
       {
         time: '18:00',
@@ -188,9 +289,17 @@ export const itinerary: DayItinerary[] = [
         subtitle: '回到高山',
         category: 'food',
         mapQuery: '麺屋白川 高山市',
+        lat: 36.1455,
+        lng: 137.2505,
+        businessHours: '11:00–15:00、18:00–21:00（水曜休）',
+        transitMinutes: 70,
       },
     ],
   },
+
+  // ─────────────────────────────────────────────────────
+  // DAY 4 · 合掌村與名古屋購物衝刺
+  // ─────────────────────────────────────────────────────
   {
     day: 4,
     date: '04.19',
@@ -198,37 +307,61 @@ export const itinerary: DayItinerary[] = [
     theme: '合掌村與名古屋購物衝刺',
     themeIcon: '🛖',
     gradient: 'from-emerald-600 to-teal-400',
+    weatherLat: 36.2572,
+    weatherLng: 136.9062,
+    weatherLocation: '白川鄉',
     activities: [
       {
-        time: '07:20 - 09:00',
+        time: '07:20 – 09:00',
         icon: '🍎',
         title: '宮川朝市',
         subtitle: '高山最熱鬧的晨市',
         category: 'attraction',
         mapQuery: '宮川朝市 高山市',
+        lat: 36.1456,
+        lng: 137.2559,
+        businessHours: '07:00–12:00（年中無休）',
       },
       {
-        time: '09:30 - 10:20',
+        time: '09:30 – 10:20',
         icon: '🚌',
         title: '濃飛巴士',
         subtitle: '高山 ➔ 合掌村（白川鄉）',
         category: 'transport',
         mapQuery: '白川郷バス停',
+        lat: 36.1444,
+        lng: 137.2491,
+        schedule: {
+          line: '濃飛バス 世界遺産バス',
+          departures: ['08:35', '09:35', '10:35', '11:35', '13:35'],
+          bookedIndex: 1,
+        },
       },
       {
-        time: '10:30 - 14:30',
+        time: '10:30 – 14:30',
         icon: '🛖',
         title: '合掌村',
-        subtitle: '展望台、和田家、三小屋，世界遺產',
+        subtitle: '展望台、和田家、三小屋，世界文化遺產',
         category: 'attraction',
         mapQuery: '白川郷 合掌造り集落 岐阜県',
+        lat: 36.2572,
+        lng: 136.9062,
+        businessHours: '終日開放（和田家 09:00–17:00）',
       },
       {
-        time: '15:00 - 18:00',
+        time: '15:00 – 18:00',
         icon: '🚌',
         title: '返回名古屋',
+        subtitle: '高速バス 白川郷→名古屋',
         category: 'transport',
         mapQuery: '白川郷バスターミナル',
+        lat: 36.2569,
+        lng: 136.9055,
+        schedule: {
+          line: '高速バス 白川郷→名古屋',
+          departures: ['13:00', '14:00', '15:10', '16:10', '17:10'],
+          bookedIndex: 2,
+        },
       },
       {
         time: '18:30',
@@ -236,9 +369,16 @@ export const itinerary: DayItinerary[] = [
         title: '戰利品：弁才天水果大福',
         category: 'food',
         mapQuery: '弁才天 名古屋 水果大福',
+        lat: 35.1685,
+        lng: 136.9038,
+        businessHours: '10:00–19:00（不定休）',
       },
     ],
   },
+
+  // ─────────────────────────────────────────────────────
+  // DAY 5 · 吉卜力與鰻魚飯傳奇
+  // ─────────────────────────────────────────────────────
   {
     day: 5,
     date: '04.20',
@@ -246,30 +386,44 @@ export const itinerary: DayItinerary[] = [
     theme: '吉卜力與鰻魚飯傳奇',
     themeIcon: '🐉',
     gradient: 'from-violet-600 to-purple-400',
+    weatherLat: 35.1815,
+    weatherLng: 136.9066,
+    weatherLocation: '名古屋',
     activities: [
       {
-        time: '08:00 - 09:00',
+        time: '08:00 – 09:00',
         icon: '☕',
         title: '早餐：喫茶 Tsuzuki',
         subtitle: '名古屋名物倒咖啡特技',
         category: 'food',
         mapQuery: '喫茶ツヅキ 名古屋',
+        lat: 35.1695,
+        lng: 136.8991,
+        businessHours: '08:00–16:00（日・月曜休）',
       },
       {
-        time: '10:00 - 14:30',
+        time: '10:00 – 14:30',
         icon: '🌳',
         title: '吉卜力公園',
-        subtitle: '大倉庫 12:00 已預約',
+        subtitle: '大倉庫 12:00 已預約（須提前購票）',
         category: 'attraction',
         mapQuery: 'ジブリパーク 愛知県長久手市',
+        lat: 35.1851,
+        lng: 137.0512,
+        businessHours: '10:00–18:00（火曜休・要予約）',
+        transitMinutes: 40,
       },
       {
-        time: '15:30 - 17:30',
+        time: '15:30 – 17:30',
         icon: '⛩️',
         title: '熱田神宮',
         subtitle: '先抽蓬萊軒號碼牌',
         category: 'attraction',
         mapQuery: '熱田神宮 名古屋市',
+        lat: 35.1278,
+        lng: 136.9085,
+        businessHours: '境内 終日開放（宝物館 09:00–16:30）',
+        transitMinutes: 45,
       },
       {
         time: '17:30',
@@ -278,9 +432,17 @@ export const itinerary: DayItinerary[] = [
         subtitle: '名古屋名物鰻魚飯（ひつまぶし）',
         category: 'food',
         mapQuery: '熱田蓬来軒 名古屋',
+        lat: 35.1282,
+        lng: 136.9079,
+        businessHours: '11:30–14:00、17:00–21:00（月曜休）',
+        transitMinutes: 5,
       },
     ],
   },
+
+  // ─────────────────────────────────────────────────────
+  // DAY 6 · 蝦餅衝刺：機場巡禮返家
+  // ─────────────────────────────────────────────────────
   {
     day: 6,
     date: '04.21',
@@ -288,6 +450,9 @@ export const itinerary: DayItinerary[] = [
     theme: '蝦餅衝刺：機場巡禮返家',
     themeIcon: '✈️',
     gradient: 'from-slate-700 to-slate-500',
+    weatherLat: 34.8573,
+    weatherLng: 136.8059,
+    weatherLocation: '中部国際空港',
     activities: [
       {
         time: '09:30',
@@ -296,6 +461,13 @@ export const itinerary: DayItinerary[] = [
         subtitle: '名鐵名古屋站出發',
         category: 'transport',
         mapQuery: '名鉄名古屋駅',
+        lat: 35.1706,
+        lng: 136.8821,
+        schedule: {
+          line: '名鐵空港線 μ-SKY 特急',
+          departures: ['08:28', '08:58', '09:28', '09:58', '10:28'],
+          bookedIndex: 2,
+        },
       },
       {
         time: '10:10',
@@ -304,14 +476,20 @@ export const itinerary: DayItinerary[] = [
         subtitle: '務必在入關前買好！',
         category: 'task',
         mapQuery: 'えびせんべいの里 中部国際空港',
+        lat: 34.8597,
+        lng: 136.8095,
+        businessHours: '07:00–20:00',
+        transitMinutes: 28,
       },
       {
-        time: '12:20 - 14:30',
+        time: '12:20 – 14:30',
         icon: '✈️',
         title: '航班 CI0155',
         subtitle: 'NGO T1 ➔ TPE',
         category: 'flight',
         mapQuery: '中部国際空港 セントレア',
+        lat: 34.8573,
+        lng: 136.8059,
       },
     ],
   },

@@ -16,10 +16,10 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Spring cherry blossom background */
+/* Cream travel-journal background with subtle sakura petal tile */
 body {
-  background-color: #FFF5F8;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cellipse cx='28' cy='38' rx='6' ry='10' transform='rotate(20,28,38)' fill='%23FFB7C5' opacity='0.28'/%3E%3Cellipse cx='165' cy='22' rx='5' ry='8' transform='rotate(-18,165,22)' fill='%23FFC8D5' opacity='0.22'/%3E%3Cellipse cx='178' cy='148' rx='7' ry='11' transform='rotate(48,178,148)' fill='%23FFB7C5' opacity='0.22'/%3E%3Cellipse cx='68' cy='180' rx='5' ry='8' transform='rotate(-42,68,180)' fill='%23FFCCD8' opacity='0.24'/%3E%3Cellipse cx='108' cy='92' rx='4' ry='7' transform='rotate(12,108,92)' fill='%23FFB7C5' opacity='0.18'/%3E%3Cg transform='translate(138,58)' opacity='0.2' fill='%23FF9BB5'%3E%3Cellipse cx='0' cy='-9' rx='4' ry='7'/%3E%3Cellipse cx='0' cy='-9' rx='4' ry='7' transform='rotate(72)'/%3E%3Cellipse cx='0' cy='-9' rx='4' ry='7' transform='rotate(144)'/%3E%3Cellipse cx='0' cy='-9' rx='4' ry='7' transform='rotate(216)'/%3E%3Cellipse cx='0' cy='-9' rx='4' ry='7' transform='rotate(288)'/%3E%3Ccircle r='2.5' fill='%23FF6B8A'/%3E%3C/g%3E%3Cg transform='translate(48,122)' opacity='0.14' fill='%23FFA8C0'%3E%3Cellipse cx='0' cy='-7' rx='3' ry='5'/%3E%3Cellipse cx='0' cy='-7' rx='3' ry='5' transform='rotate(72)'/%3E%3Cellipse cx='0' cy='-7' rx='3' ry='5' transform='rotate(144)'/%3E%3Cellipse cx='0' cy='-7' rx='3' ry='5' transform='rotate(216)'/%3E%3Cellipse cx='0' cy='-7' rx='3' ry='5' transform='rotate(288)'/%3E%3C/g%3E%3Cellipse cx='88' cy='55' rx='3' ry='5' transform='rotate(35,88,55)' fill='%23B5EAD7' opacity='0.22'/%3E%3Cellipse cx='195' cy='180' rx='4' ry='7' transform='rotate(-22,195,180)' fill='%23A8D8B8' opacity='0.18'/%3E%3Cellipse cx='12' cy='155' rx='3' ry='5' transform='rotate(55,12,155)' fill='%23B5EAD7' opacity='0.16'/%3E%3C/svg%3E");
+  background-color: #F7F2EA;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cellipse cx='28' cy='38' rx='6' ry='10' transform='rotate(20,28,38)' fill='%23E8A0B0' opacity='0.22'/%3E%3Cellipse cx='165' cy='22' rx='5' ry='8' transform='rotate(-18,165,22)' fill='%23F0B8C8' opacity='0.18'/%3E%3Cellipse cx='178' cy='148' rx='7' ry='11' transform='rotate(48,178,148)' fill='%23E8A0B0' opacity='0.18'/%3E%3Cellipse cx='68' cy='180' rx='5' ry='8' transform='rotate(-42,68,180)' fill='%23F0C0CE' opacity='0.2'/%3E%3Cellipse cx='108' cy='92' rx='4' ry='7' transform='rotate(12,108,92)' fill='%23E8A0B0' opacity='0.14'/%3E%3Cg transform='translate(138,58)' opacity='0.16' fill='%23E09AB0'%3E%3Cellipse cx='0' cy='-9' rx='4' ry='7'/%3E%3Cellipse cx='0' cy='-9' rx='4' ry='7' transform='rotate(72)'/%3E%3Cellipse cx='0' cy='-9' rx='4' ry='7' transform='rotate(144)'/%3E%3Cellipse cx='0' cy='-9' rx='4' ry='7' transform='rotate(216)'/%3E%3Cellipse cx='0' cy='-9' rx='4' ry='7' transform='rotate(288)'/%3E%3Ccircle r='2.5' fill='%23C8607A'/%3E%3C/g%3E%3Cg transform='translate(48,122)' opacity='0.11' fill='%23E8A8B8'%3E%3Cellipse cx='0' cy='-7' rx='3' ry='5'/%3E%3Cellipse cx='0' cy='-7' rx='3' ry='5' transform='rotate(72)'/%3E%3Cellipse cx='0' cy='-7' rx='3' ry='5' transform='rotate(144)'/%3E%3Cellipse cx='0' cy='-7' rx='3' ry='5' transform='rotate(216)'/%3E%3Cellipse cx='0' cy='-7' rx='3' ry='5' transform='rotate(288)'/%3E%3C/g%3E%3Cellipse cx='88' cy='55' rx='3' ry='5' transform='rotate(35,88,55)' fill='%23A8C8A0' opacity='0.18'/%3E%3Cellipse cx='195' cy='180' rx='4' ry='7' transform='rotate(-22,195,180)' fill='%2398C090' opacity='0.14'/%3E%3Cellipse cx='12' cy='155' rx='3' ry='5' transform='rotate(55,12,155)' fill='%23A8C8A0' opacity='0.13'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 220px 220px;
 }
@@ -30,11 +30,11 @@ body {
     transform: translateY(-50px) translateX(0px) rotate(0deg);
     opacity: 0;
   }
-  8% { opacity: 0.65; }
+  8%  { opacity: 0.55; }
   25% { transform: translateY(25vh) translateX(22px) rotate(85deg); }
   50% { transform: translateY(50vh) translateX(-12px) rotate(195deg); }
   75% { transform: translateY(75vh) translateX(18px) rotate(295deg); }
-  92% { opacity: 0.45; }
+  92% { opacity: 0.4; }
   100% {
     transform: translateY(112vh) translateX(-8px) rotate(375deg);
     opacity: 0;

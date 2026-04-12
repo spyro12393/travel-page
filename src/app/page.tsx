@@ -2,6 +2,7 @@ import { itinerary } from '@/data/itinerary'
 import DaySection from '@/components/DaySection'
 import DayNav from '@/components/DayNav'
 import Checklist from '@/components/Checklist'
+import Petals from '@/components/Petals'
 
 export default function Home() {
   const navDays = itinerary.map(({ day, date, weekday, themeIcon }) => ({
@@ -13,17 +14,23 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      {/* Falling cherry blossom petals */}
+      <Petals />
+
       {/* Hero */}
       <header className="relative bg-gradient-to-br from-japan-red via-[#8B001F] to-japan-navy text-white overflow-hidden">
+        {/* Spring cherry blossom overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-300/20 via-transparent to-transparent pointer-events-none" />
         {/* Background decorations */}
         <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
           <div className="absolute -top-4 right-4 text-[160px] font-bold leading-none opacity-[0.07]">
             旅
           </div>
           <div className="absolute bottom-0 left-0 w-full h-px bg-white/10" />
-          {/* Subtle circle decorations */}
-          <div className="absolute top-12 left-8 w-32 h-32 rounded-full bg-white/5" />
-          <div className="absolute bottom-8 right-24 w-20 h-20 rounded-full bg-white/5" />
+          {/* Sakura blossom silhouettes */}
+          <div className="absolute top-12 left-8 w-32 h-32 rounded-full bg-rose-300/10" />
+          <div className="absolute bottom-8 right-24 w-20 h-20 rounded-full bg-pink-200/10" />
+          <div className="absolute top-6 right-48 w-12 h-12 rounded-full bg-rose-200/10" />
         </div>
 
         <div className="relative max-w-2xl mx-auto px-4 pt-10 pb-8">

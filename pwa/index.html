@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日本旅遊計劃 2026 · 名古屋飛驒高山</title>
+  <meta name="description" content="名古屋・飛驒高山・上高地・白川鄉・吉卜力公園 — 2026年4月旅遊計劃">
+  <meta name="theme-color" content="#776B5D">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="日本旅遊">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" x-data="app" x-cloak>
+
+    <!-- ── Loading ───────────────────────────────────────────── -->
+    <div x-show="loading" class="loading-screen">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">載入行程中…</p>
+    </div>
+
+    <!-- ── Main content ──────────────────────────────────────── -->
+    <template x-if="!loading">
+      <div>
+
+        <!-- Sticky day nav -->
+        <nav class="day-nav" aria-label="每日導航">
+          <div class="day-nav-inner">
+            <template x-for="day in days" :key="day.day">
+              <button
+                class="day-tab"
+                :class="{ active: activeDay === day.day }"
+                @click="scrollToDay(day.day)"
+                :aria-label="`Day ${day.day} ${day.date}`">
+                <span class="day-tab-icon" x-text="day.themeIcon"></span>
+                <span class="day-tab-date" x-text="day.date"></span>
+              </button>
+            </template>
+          </div>
+        </nav>
+
+        <!-- Hero header -->
+        <header class="hero" role="banner">
+          <div class="hero-inner">
+            <div class="hero-meta">
+              <span class="hero-flag">🇯🇵</span>
+              <span class="hero-label">JAPAN 2026</span>
+            </div>
+            <h1>名古屋 · 飛驒高山</h1>
+            <p class="hero-sub">上高地 · 白川鄉 · 吉卜力公園</p>
+            <p class="hero-dates">2026年 04.16（四）— 04.21（二）· 6天5夜</p>
+            <div class="flight-cards">
+              <div class="flight-card">
+                <span class="flight-card-icon">✈️</span>
+                <div>
+                  <div class="flight-dir">去程</div>
+                  <div class="flight-num">CI0154 · TPE ➔ NGO</div>
+                  <div class="flight-time">07:30 出發</div>
+                </div>
+              </div>
+              <div class="flight-card">
+                <span class="flight-card-icon">✈️</span>
+                <div>
+                  <div class="flight-dir">回程</div>
+                  <div class="flight-num">CI0155 · NGO ➔ TPE</div>
+                  <div class="flight-time">12:20 出發</div>
+                </div>
+              </div>
+            </div>
+            <div class="hero-tags">
+              <template x-for="tag in ['犬山城','飛驒高山老街','上高地','新穗高纜車','合掌村','吉卜力公園','熱田神宮']" :key="tag">
+                <span class="hero-tag" x-text="tag"></span>
+              </template>
+            </div>
+          </div>
+        </header>
+
+        <main>
+
+          <!-- ── Pre-departure checklist ───────────────────── -->
+          <div class="section-card">
+            <h2 class="section-title">✅ 出發前確認</h2>
+            <div class="checklist">
+              <template x-for="item in checklist" :key="item.id">
+                <label class="checklist-item" :class="{ done: checklistDone[item.id] }">
+                  <input type="checkbox"
+                         :checked="checklistDone[item.id]"
+                         @change="toggleChecklist(item.id)">
+                  <span class="item-icon" x-text="item.icon"></span>
+                  <span class="item-text" x-text="item.text"></span>
+                </label>
+              </template>
+              <div x-show="allChecked" class="checklist-done">🎉 準備完成！行李箱關起來了！</div>
+            </div>
+          </div>
+
+          <!-- ── Currency converter ────────────────────────── -->
+          <div class="section-card">
+            <h2 class="section-title">💱 匯率換算（日圓 → 台幣）</h2>
+            <div class="converter">
+              <div x-show="liveRate" class="rate-badge">
+                即時匯率：1 JPY = <strong x-text="liveRate ? liveRate.toFixed(4) : ''"></strong> TWD
+              </div>
+              <div class="converter-input-row">
+                <span class="currency-prefix">¥</span>
+                <input
+                  type="number"
+                  class="jpy-input"
+                  x-model.number="jpy"
+                  min="0"
+                  step="100"
+                  inputmode="numeric"
+                  placeholder="輸入日圓金額">
+              </div>
+              <div class="converter-result">
+                <span class="result-label">NT$</span>
+                <span class="result-amount" x-text="twd.toLocaleString()"></span>
+              </div>
+              <div class="quick-amounts">
+                <template x-for="amt in [1000, 3000, 5000, 10000]" :key="amt">
+                  <button
+                    class="quick-btn"
+                    :class="{ active: jpy === amt }"
+                    @click="jpy = amt"
+                    x-text="`¥${amt.toLocaleString()}`">
+                  </button>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Day sections ──────────────────────────────── -->
+          <template x-for="day in days" :key="day.day">
+            <section
+              class="day-section"
+              :id="`day-${day.day}`"
+              :data-day="day.day"
+              :aria-label="`第 ${day.day} 天 ${day.date}`">
+
+              <!-- Day header -->
+              <div class="day-header" :style="`background: ${dayGradient(day.day)}`">
+                <div class="day-header-meta">
+                  <span class="day-number" x-text="`Day ${day.day}`"></span>
+                  <span class="day-date" x-text="`${day.date}（${day.weekday}）`"></span>
+                </div>
+                <div class="day-title">
+                  <span x-text="day.themeIcon"></span>
+                  <span x-text="day.theme"></span>
+                </div>
+
+                <!-- Weather -->
+                <div>
+                  <template x-if="weather[day.day]">
+                    <div class="day-weather">
+                      <span class="weather-emoji" x-text="wmoEmoji(weather[day.day].code)"></span>
+                      <div class="weather-info">
+                        <span class="weather-desc" x-text="wmoLabel(weather[day.day].code)"></span>
+                        <span class="weather-temp"
+                              x-text="`${weather[day.day].min}° – ${weather[day.day].max}°C`">
+                        </span>
+                      </div>
+                      <span class="weather-loc" x-text="day.weatherLocation"></span>
+                    </div>
+                  </template>
+                  <template x-if="!weather[day.day]">
+                    <div class="day-weather">
+                      <span class="weather-loading">天氣載入中…</span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Activity list -->
+              <div class="activities">
+                <template x-for="(activity, index) in day.activities" :key="index">
+                  <div>
+
+                    <!-- Transit time connector -->
+                    <div
+                      x-show="activity.transitMinutes && !isTransport(activity.category)"
+                      class="transit-pill">
+                      🚶
+                      <span x-text="`移動約 ${activity.transitMinutes} 分鐘`"></span>
+                    </div>
+
+                    <!-- Activity card -->
+                    <div
+                      class="activity-card"
+                      :class="[
+                        isTransport(activity.category) ? 'transport-card' : 'general-card',
+                        visited[activityId(day.day, index)] ? 'is-visited' : ''
+                      ]">
+
+                      <!-- Card header: badge + visited toggle -->
+                      <div class="card-header">
+                        <span
+                          class="cat-badge"
+                          :class="`badge-${categoryLabel(activity.category)}`"
+                          x-text="categoryLabel(activity.category)">
+                        </span>
+                        <label
+                          x-show="!isTransport(activity.category)"
+                          class="visited-label">
+                          <input
+                            type="checkbox"
+                            :checked="visited[activityId(day.day, index)]"
+                            @change="toggleVisited(activityId(day.day, index))">
+                          <span x-text="visited[activityId(day.day, index)] ? '已造訪 ✓' : '標記造訪'"></span>
+                        </label>
+                      </div>
+
+                      <!-- Main content -->
+                      <div class="card-title-row">
+                        <span class="activity-emoji" x-text="activity.icon"></span>
+                        <div class="activity-details">
+                          <div
+                            x-show="activity.time"
+                            class="activity-time"
+                            x-text="activity.time">
+                          </div>
+                          <div class="activity-title" x-text="activity.title"></div>
+                          <div
+                            x-show="activity.subtitle"
+                            class="activity-subtitle"
+                            x-text="activity.subtitle">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Business hours -->
+                      <div x-show="activity.businessHours" class="business-hours">
+                        <span class="hours-icon">🕐</span>
+                        <span x-text="activity.businessHours"></span>
+                      </div>
+
+                      <!-- Transit schedule chips -->
+                      <div x-show="activity.schedule" class="schedule">
+                        <div class="schedule-line" x-text="activity.schedule?.line"></div>
+                        <template x-if="activity.schedule">
+                          <div class="chips-row">
+                            <template x-for="chip in buildChips(activity.schedule)" :key="chip.label">
+                              <div class="chip" :class="{ 'chip-booked': chip.booked }">
+                                <div class="chip-label" x-text="chip.label"></div>
+                                <div class="chip-time" x-text="chip.time"></div>
+                              </div>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+
+                      <!-- Action buttons -->
+                      <div class="card-actions">
+                        <!-- Navigate (transport) -->
+                        <a
+                          x-show="isTransport(activity.category) && hasNav(activity)"
+                          :href="navigateUrl(activity)"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="btn btn-navigate">
+                          🧭 導航前往
+                        </a>
+                        <!-- Map link (non-transport) -->
+                        <a
+                          x-show="!isTransport(activity.category) && hasNav(activity)"
+                          :href="mapUrl(activity)"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="btn btn-map">
+                          📍 Google Maps
+                        </a>
+                      </div>
+
+                    </div><!-- end .activity-card -->
+                  </div>
+                </template>
+              </div><!-- end .activities -->
+
+            </section>
+          </template>
+
+          <!-- Footer -->
+          <footer class="footer">
+            <div class="footer-divider"></div>
+            <div class="footer-emoji">🌸</div>
+            <p class="footer-main">良い旅を！</p>
+            <p class="footer-sub">祝你有個美好的日本旅程</p>
+          </footer>
+
+        </main>
+      </div>
+    </template>
+
+  </div><!-- #app -->
+
+  <script src="app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</body>
+</html>

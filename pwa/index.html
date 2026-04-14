@@ -7,7 +7,7 @@
   <meta name="description" content="名古屋・飛驒高山・上高地・白川鄉・吉卜力公園 — 2026年4月旅遊計劃">
   <meta name="theme-color" content="#776B5D">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="日本旅遊">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
@@ -21,11 +21,10 @@
       <p class="loading-text">載入行程中…</p>
     </div>
 
-    <!-- ── Main content ──────────────────────────────────────── -->
     <template x-if="!loading">
       <div>
 
-        <!-- Sticky day nav -->
+        <!-- ── Sticky day nav ─────────────────────────────────── -->
         <nav class="day-nav" aria-label="每日導航">
           <div class="day-nav-inner">
             <template x-for="day in days" :key="day.day">
@@ -33,7 +32,7 @@
                 class="day-tab"
                 :class="{ active: activeDay === day.day }"
                 @click="scrollToDay(day.day)"
-                :aria-label="`Day ${day.day} ${day.date}`">
+                :aria-label="`Day ${day.day} · ${day.date}`">
                 <span class="day-tab-icon" x-text="day.themeIcon"></span>
                 <span class="day-tab-date" x-text="day.date"></span>
               </button>
@@ -41,7 +40,30 @@
           </div>
         </nav>
 
-        <!-- Hero header -->
+        <!-- ── Weather overview bar ───────────────────────────── -->
+        <div class="weather-bar">
+          <div class="weather-bar-inner">
+            <span class="weather-bar-label">天氣預報</span>
+            <template x-for="day in days" :key="day.day">
+              <div class="weather-day-pill">
+                <span class="wd-date" x-text="day.date"></span>
+                <template x-if="weather[day.day]">
+                  <span class="wd-emoji" x-text="wmoEmoji(weather[day.day].code)"></span>
+                </template>
+                <template x-if="!weather[day.day]">
+                  <span class="wd-emoji">·</span>
+                </template>
+                <template x-if="weather[day.day]">
+                  <span class="wd-temp"
+                        x-text="`${weather[day.day].min}°–${weather[day.day].max}°`">
+                  </span>
+                </template>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- ── Hero ──────────────────────────────────────────── -->
         <header class="hero" role="banner">
           <div class="hero-inner">
             <div class="hero-meta">
@@ -79,29 +101,14 @@
 
         <main>
 
-          <!-- ── Pre-departure checklist ───────────────────── -->
-          <div class="section-card">
-            <h2 class="section-title">✅ 出發前確認</h2>
-            <div class="checklist">
-              <template x-for="item in checklist" :key="item.id">
-                <label class="checklist-item" :class="{ done: checklistDone[item.id] }">
-                  <input type="checkbox"
-                         :checked="checklistDone[item.id]"
-                         @change="toggleChecklist(item.id)">
-                  <span class="item-icon" x-text="item.icon"></span>
-                  <span class="item-text" x-text="item.text"></span>
-                </label>
-              </template>
-              <div x-show="allChecked" class="checklist-done">🎉 準備完成！行李箱關起來了！</div>
-            </div>
-          </div>
-
-          <!-- ── Currency converter ────────────────────────── -->
+          <!-- ── Currency converter ──────────────────────────── -->
           <div class="section-card">
             <h2 class="section-title">💱 匯率換算（日圓 → 台幣）</h2>
             <div class="converter">
               <div x-show="liveRate" class="rate-badge">
-                即時匯率：1 JPY = <strong x-text="liveRate ? liveRate.toFixed(4) : ''"></strong> TWD
+                即時匯率：1 JPY =
+                <strong x-text="liveRate ? liveRate.toFixed(4) : ''"></strong>
+                TWD
               </div>
               <div class="converter-input-row">
                 <span class="currency-prefix">¥</span>
@@ -131,7 +138,7 @@
             </div>
           </div>
 
-          <!-- ── Day sections ──────────────────────────────── -->
+          <!-- ── Day sections ────────────────────────────────── -->
           <template x-for="day in days" :key="day.day">
             <section
               class="day-section"
@@ -140,7 +147,7 @@
               :aria-label="`第 ${day.day} 天 ${day.date}`">
 
               <!-- Day header -->
-              <div class="day-header" :style="`background: ${dayGradient(day.day)}`">
+              <div class="day-header">
                 <div class="day-header-meta">
                   <span class="day-number" x-text="`Day ${day.day}`"></span>
                   <span class="day-date" x-text="`${day.date}（${day.weekday}）`"></span>
@@ -149,18 +156,15 @@
                   <span x-text="day.themeIcon"></span>
                   <span x-text="day.theme"></span>
                 </div>
-
-                <!-- Weather -->
+                <!-- Weather for this day -->
                 <div>
                   <template x-if="weather[day.day]">
                     <div class="day-weather">
                       <span class="weather-emoji" x-text="wmoEmoji(weather[day.day].code)"></span>
-                      <div class="weather-info">
-                        <span class="weather-desc" x-text="wmoLabel(weather[day.day].code)"></span>
-                        <span class="weather-temp"
-                              x-text="`${weather[day.day].min}° – ${weather[day.day].max}°C`">
-                        </span>
-                      </div>
+                      <span class="weather-desc" x-text="wmoLabel(weather[day.day].code)"></span>
+                      <span class="weather-temp"
+                            x-text="`${weather[day.day].min}° – ${weather[day.day].max}°C`">
+                      </span>
                       <span class="weather-loc" x-text="day.weatherLocation"></span>
                     </div>
                   </template>
@@ -193,13 +197,9 @@
                         visited[activityId(day.day, index)] ? 'is-visited' : ''
                       ]">
 
-                      <!-- Card header: badge + visited toggle -->
+                      <!-- Badge + visited toggle -->
                       <div class="card-header">
-                        <span
-                          class="cat-badge"
-                          :class="`badge-${categoryLabel(activity.category)}`"
-                          x-text="categoryLabel(activity.category)">
-                        </span>
+                        <span class="cat-badge" x-text="categoryLabel(activity.category)"></span>
                         <label
                           x-show="!isTransport(activity.category)"
                           class="visited-label">
@@ -207,11 +207,13 @@
                             type="checkbox"
                             :checked="visited[activityId(day.day, index)]"
                             @change="toggleVisited(activityId(day.day, index))">
-                          <span x-text="visited[activityId(day.day, index)] ? '已造訪 ✓' : '標記造訪'"></span>
+                          <span
+                            x-text="visited[activityId(day.day, index)] ? '已造訪 ✓' : '標記造訪'">
+                          </span>
                         </label>
                       </div>
 
-                      <!-- Main content -->
+                      <!-- Title row -->
                       <div class="card-title-row">
                         <span class="activity-emoji" x-text="activity.icon"></span>
                         <div class="activity-details">
@@ -240,10 +242,12 @@
                         <div class="schedule-line" x-text="activity.schedule?.line"></div>
                         <template x-if="activity.schedule">
                           <div class="chips-row">
-                            <template x-for="chip in buildChips(activity.schedule)" :key="chip.label">
+                            <template
+                              x-for="chip in buildChips(activity.schedule)"
+                              :key="chip.label">
                               <div class="chip" :class="{ 'chip-booked': chip.booked }">
                                 <div class="chip-label" x-text="chip.label"></div>
-                                <div class="chip-time" x-text="chip.time"></div>
+                                <div class="chip-time"  x-text="chip.time"></div>
                               </div>
                             </template>
                           </div>
@@ -252,30 +256,28 @@
 
                       <!-- Action buttons -->
                       <div class="card-actions">
-                        <!-- Navigate (transport) -->
                         <a
                           x-show="isTransport(activity.category) && hasNav(activity)"
                           :href="navigateUrl(activity)"
                           target="_blank"
                           rel="noopener noreferrer"
                           class="btn btn-navigate">
-                          🧭 導航前往
+                          🧭 導航
                         </a>
-                        <!-- Map link (non-transport) -->
                         <a
                           x-show="!isTransport(activity.category) && hasNav(activity)"
                           :href="mapUrl(activity)"
                           target="_blank"
                           rel="noopener noreferrer"
                           class="btn btn-map">
-                          📍 Google Maps
+                          📍 地圖
                         </a>
                       </div>
 
-                    </div><!-- end .activity-card -->
+                    </div><!-- /.activity-card -->
                   </div>
                 </template>
-              </div><!-- end .activities -->
+              </div><!-- /.activities -->
 
             </section>
           </template>

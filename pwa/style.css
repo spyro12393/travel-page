@@ -20,8 +20,13 @@
 }
 
 /* ─── Force palette compliance ───────────────────────────────── */
-h1, h2, h3, h4, h5, h6, p, span, div, a, button, label, input, li {
-  color: var(--text-main);
+h1, h2, h3, h4, p, span, div {
+  color: var(--text-main) !important;
+}
+
+/* Safety: hide any checklist remnant */
+.checklist-section, #checklist {
+  display: none !important;
 }
 
 /* ─── Reset ──────────────────────────────────────────────────── */
@@ -78,9 +83,10 @@ input { font: inherit; }
   background: var(--text-main);
   border-color: var(--text-main);
 }
+/* Active tab: light text on --text-main background — must beat !important rule */
 .day-tab.active .day-tab-icon,
 .day-tab.active .day-tab-date {
-  color: var(--bg);
+  color: var(--bg) !important;
 }
 .day-tab-icon { font-size: 16px; line-height: 1; }
 .day-tab-date { font-size: 10px; font-weight: 600; letter-spacing: 0.02em; }
@@ -292,8 +298,9 @@ main {
   background: var(--text-main);
   border-radius: var(--radius-sm);
 }
-.result-label { font-size: 12px; font-weight: 600; color: var(--accent-subtle); }
-.result-amount { font-size: 22px; font-weight: 800; color: var(--bg); flex: 1; }
+/* Converter result: light text on --text-main background */
+.result-label { font-size: 12px; font-weight: 600; color: var(--accent-subtle) !important; }
+.result-amount { font-size: 22px; font-weight: 800; color: var(--bg) !important; flex: 1; }
 .quick-amounts { display: flex; gap: 6px; flex-wrap: wrap; }
 .quick-btn {
   flex: 1;
@@ -419,10 +426,10 @@ main {
 }
 .activity-card.is-visited { opacity: 0.48; }
 
-/* Transport card */
+/* Transport card — enforce spec requirements */
 .transport-card {
-  background: transparent;
-  border: 1px dashed var(--accent);
+  background: transparent !important;
+  border: 1px dashed var(--accent) !important;
 }
 
 /* General card */
@@ -518,9 +525,10 @@ main {
   border-color: var(--text-main);
 }
 .chip-label { font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-faint); }
-.chip.chip-booked .chip-label { color: var(--accent-subtle); }
+/* Booked chip: light text on --text-main background */
+.chip.chip-booked .chip-label { color: var(--accent-subtle) !important; }
 .chip-time { font-size: 13px; font-weight: 700; }
-.chip.chip-booked .chip-time { color: var(--bg); }
+.chip.chip-booked .chip-time { color: var(--bg) !important; }
 
 /* Card action buttons */
 .card-actions { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
@@ -542,7 +550,8 @@ main {
   border-color: var(--text-main);
 }
 .btn-navigate:hover { background: rgba(119, 107, 93, 0.85); }
-.btn-navigate, .btn-navigate * { color: var(--bg); }
+/* Navigate button: light text on --text-main background */
+.btn-navigate, .btn-navigate * { color: var(--bg) !important; }
 
 /* ─── Footer ─────────────────────────────────────────────────── */
 .footer { text-align: center; padding: 32px 0 16px; }

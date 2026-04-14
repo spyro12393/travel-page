@@ -141,6 +141,8 @@ document.addEventListener('alpine:init', () => {
         if (v) this.visited = JSON.parse(v);
         const sh = localStorage.getItem('jp26_shopping');
         if (sh) this.shopItems = JSON.parse(sh);
+        const pg = localStorage.getItem('jp26_page');
+        if (pg) this.activePage = pg;
       } catch (_) {}
     },
 
@@ -206,6 +208,7 @@ document.addEventListener('alpine:init', () => {
     /* ── Page switching ── */
     switchPage(page) {
       this.activePage = page;
+      try { localStorage.setItem('jp26_page', page); } catch (_) {}
       window.scrollTo({ top: 0, behavior: 'instant' });
     },
 

@@ -100,7 +100,9 @@ document.addEventListener('alpine:init', () => {
 
     /* ── Shopping state ── */
     shopItems: [],
-    shopForm: { name: '', imageUrl: '', location: '', price: '' },
+    shopForm:  { name: '', imageUrl: '', location: '', price: '' },
+    editingId: null,
+    editForm:  { name: '', imageUrl: '', location: '', price: '' },
 
     /* computed */
     get effectiveRate() { return this.liveRate ?? DEFAULT_EXCHANGE_RATE; },
@@ -236,8 +238,30 @@ document.addEventListener('alpine:init', () => {
 
     deleteShopItem(id) {
       this.shopItems = this.shopItems.filter(i => i.id !== id);
+      if (this.editingId === id) this.editingId = null;
       this.saveShop();
     },
+
+    startEdit(item) {
+      this.editingId = item.id;
+      this.editForm  = { name: item.name, imageUrl: item.imageUrl, location: item.location, price: item.price };
+    },
+
+    saveEdit() {
+      const name = this.editForm.name.trim();
+      if (!name) return;
+      const item = this.shopItems.find(i => i.id === this.editingId);
+      if (item) {
+        item.name     = name;
+        item.imageUrl = this.editForm.imageUrl.trim();
+        item.location = this.editForm.location.trim();
+        item.price    = Number(this.editForm.price) || 0;
+        this.saveShop();
+      }
+      this.editingId = null;
+    },
+
+    cancelEdit() { this.editingId = null; },
 
     saveShop() {
       try { localStorage.setItem('jp26_shopping', JSON.stringify(this.shopItems)); } catch (_) {}

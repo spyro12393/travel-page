@@ -296,44 +296,76 @@
             <!-- Item list -->
             <div x-show="shopItems.length > 0" class="shop-list">
               <template x-for="item in shopItems" :key="item.id">
-                <div class="shop-item" :class="{ purchased: item.purchased }">
+                <div class="shop-item" :class="{ purchased: item.purchased, editing: editingId === item.id }">
 
-                  <!-- Thumbnail -->
-                  <div class="shop-item-thumb">
-                    <template x-if="item.imageUrl">
-                      <img :src="item.imageUrl" :alt="item.name"
-                           @error="$el.style.display='none'">
-                    </template>
-                    <template x-if="!item.imageUrl">
-                      <span>🛍️</span>
-                    </template>
-                  </div>
-
-                  <!-- Info -->
-                  <div class="shop-item-body">
-                    <div class="shop-item-name" x-text="item.name"></div>
-                    <div x-show="item.location" class="shop-item-meta">
-                      <span>📍</span><span x-text="item.location"></span>
+                  <!-- ── Edit mode ── -->
+                  <template x-if="editingId === item.id">
+                    <div class="shop-edit-form">
+                      <input type="text" class="shop-input" x-model="editForm.name"
+                             placeholder="商品名稱（必填）" @keydown.enter="saveEdit()" @keydown.escape="cancelEdit()">
+                      <div class="shop-form-row">
+                        <input type="text" class="shop-input" x-model="editForm.location"
+                               placeholder="購買地點" @keydown.escape="cancelEdit()">
+                        <input type="number" class="shop-input" x-model="editForm.price"
+                               placeholder="價格 ¥" min="0" step="100" inputmode="numeric" @keydown.escape="cancelEdit()">
+                      </div>
+                      <input type="url" class="shop-input" x-model="editForm.imageUrl"
+                             placeholder="圖片網址" @keydown.escape="cancelEdit()">
+                      <div class="shop-edit-actions">
+                        <button class="shop-save-btn" :disabled="!editForm.name.trim()" @click="saveEdit()">儲存</button>
+                        <button class="shop-cancel-btn" @click="cancelEdit()">取消</button>
+                      </div>
                     </div>
-                    <div x-show="item.price > 0" class="shop-item-price">
-                      ¥<span x-text="Number(item.price).toLocaleString()"></span>
-                    </div>
-                  </div>
+                  </template>
 
-                  <!-- Actions -->
-                  <div class="shop-item-actions">
-                    <button class="shop-check-btn"
-                            :class="{ checked: item.purchased }"
-                            @click="togglePurchased(item.id)"
-                            :aria-label="item.purchased ? '取消已購買' : '標記已購買'">
-                      <span x-text="item.purchased ? '✓' : '○'"></span>
-                    </button>
-                    <button class="shop-delete-btn"
-                            @click="deleteShopItem(item.id)"
-                            aria-label="刪除品項">
-                      ✕
-                    </button>
-                  </div>
+                  <!-- ── Display mode ── -->
+                  <template x-if="editingId !== item.id">
+                    <div class="shop-item-display">
+
+                      <!-- Thumbnail -->
+                      <div class="shop-item-thumb">
+                        <template x-if="item.imageUrl">
+                          <img :src="item.imageUrl" :alt="item.name"
+                               @error="$el.style.display='none'">
+                        </template>
+                        <template x-if="!item.imageUrl">
+                          <span>🛍️</span>
+                        </template>
+                      </div>
+
+                      <!-- Info -->
+                      <div class="shop-item-body">
+                        <div class="shop-item-name" x-text="item.name"></div>
+                        <div x-show="item.location" class="shop-item-meta">
+                          <span>📍</span><span x-text="item.location"></span>
+                        </div>
+                        <div x-show="item.price > 0" class="shop-item-price">
+                          ¥<span x-text="Number(item.price).toLocaleString()"></span>
+                        </div>
+                      </div>
+
+                      <!-- Actions -->
+                      <div class="shop-item-actions">
+                        <button class="shop-check-btn"
+                                :class="{ checked: item.purchased }"
+                                @click="togglePurchased(item.id)"
+                                :aria-label="item.purchased ? '取消已購買' : '標記已購買'">
+                          <span x-text="item.purchased ? '✓' : '○'"></span>
+                        </button>
+                        <button class="shop-edit-btn"
+                                @click="startEdit(item)"
+                                aria-label="編輯品項">
+                          ✎
+                        </button>
+                        <button class="shop-delete-btn"
+                                @click="deleteShopItem(item.id)"
+                                aria-label="刪除品項">
+                          ✕
+                        </button>
+                      </div>
+
+                    </div>
+                  </template>
 
                 </div>
               </template>

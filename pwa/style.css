@@ -823,6 +823,75 @@ main {
 }
 .shop-delete-btn:hover { border-color: var(--accent); color: var(--text-main) !important; }
 
+/* Edit button */
+.shop-edit-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-dashed);
+  background: transparent;
+  font-size: 14px;
+  color: var(--text-faint) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.shop-edit-btn:hover { border-color: var(--accent); color: var(--text-main) !important; }
+
+/* Display-mode wrapper fills the card */
+.shop-item-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Editing state: border highlights */
+.shop-item.editing {
+  border-color: var(--accent);
+  border-style: solid;
+}
+
+/* Inline edit form */
+.shop-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.shop-edit-actions {
+  display: flex;
+  gap: 8px;
+}
+.shop-save-btn {
+  flex: 1;
+  padding: 9px;
+  background: var(--text-main);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.shop-save-btn, .shop-save-btn * { color: var(--bg) !important; }
+.shop-save-btn:hover   { opacity: 0.85; }
+.shop-save-btn:disabled { opacity: 0.4; cursor: default; }
+.shop-cancel-btn {
+  flex: 1;
+  padding: 9px;
+  background: var(--bg);
+  border: 1px solid var(--accent-dashed);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.shop-cancel-btn:hover { border-color: var(--accent); }
+
 /* Summary footer */
 .shop-summary {
   background: var(--surface);

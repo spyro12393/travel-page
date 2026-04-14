@@ -87,6 +87,9 @@ function mapUrl(activity) {
 document.addEventListener('alpine:init', () => {
   Alpine.data('app', () => ({
     loading: true,
+    activePage: 'itinerary',   // 'itinerary' | 'shopping'
+
+    /* ── Itinerary state ── */
     days: [],
     activeDay: 1,
     visited: {},     // activityId → boolean, persisted to localStorage
@@ -95,9 +98,18 @@ document.addEventListener('alpine:init', () => {
     jpy: 5000,
     liveRate: null,
 
+    /* ── Shopping state ── */
+    shopItems: [],
+    shopForm: { name: '', imageUrl: '', location: '', price: '' },
+
     /* computed */
     get effectiveRate() { return this.liveRate ?? DEFAULT_EXCHANGE_RATE; },
     get twd() { return Math.round(this.jpy * this.effectiveRate); },
+    get shopTotalJpy()  { return this.shopItems.reduce((s, i) => s + (Number(i.price) || 0), 0); },
+    get shopTotalTwd()  { return Math.round(this.shopTotalJpy * this.effectiveRate); },
+    get shopBoughtJpy() { return this.shopItems.filter(i => i.purchased).reduce((s, i) => s + (Number(i.price) || 0), 0); },
+    get shopBoughtTwd() { return Math.round(this.shopBoughtJpy * this.effectiveRate); },
+    get hasPurchased()  { return this.shopItems.some(i => i.purchased); },
 
     /* lifecycle */
     async init() {
@@ -125,8 +137,10 @@ document.addEventListener('alpine:init', () => {
 
     loadLocalStorage() {
       try {
-        const v = localStorage.getItem('jp26_visited');
+        const v  = localStorage.getItem('jp26_visited');
         if (v) this.visited = JSON.parse(v);
+        const sh = localStorage.getItem('jp26_shopping');
+        if (sh) this.shopItems = JSON.parse(sh);
       } catch (_) {}
     },
 
@@ -188,6 +202,43 @@ document.addEventListener('alpine:init', () => {
 
     activityId(dayNum, index) { return `d${dayNum}a${index}`; },
     hasNav(activity) { return !!(activity.mapQuery || (activity.lat && activity.lng)); },
+
+    /* ── Page switching ── */
+    switchPage(page) {
+      this.activePage = page;
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    },
+
+    /* ── Shopping methods ── */
+    addShopItem() {
+      const name = this.shopForm.name.trim();
+      if (!name) return;
+      this.shopItems.push({
+        id: Date.now(),
+        name,
+        imageUrl:  this.shopForm.imageUrl.trim(),
+        location:  this.shopForm.location.trim(),
+        price:     Number(this.shopForm.price) || 0,
+        purchased: false,
+      });
+      this.shopForm = { name: '', imageUrl: '', location: '', price: '' };
+      this.saveShop();
+      this.$nextTick(() => document.getElementById('shop-name-input')?.focus());
+    },
+
+    togglePurchased(id) {
+      const item = this.shopItems.find(i => i.id === id);
+      if (item) { item.purchased = !item.purchased; this.saveShop(); }
+    },
+
+    deleteShopItem(id) {
+      this.shopItems = this.shopItems.filter(i => i.id !== id);
+      this.saveShop();
+    },
+
+    saveShop() {
+      try { localStorage.setItem('jp26_shopping', JSON.stringify(this.shopItems)); } catch (_) {}
+    },
 
     /* template helpers */
     wmoEmoji, wmoLabel, categoryLabel, isTransport, buildChips, navigateUrl, mapUrl,
